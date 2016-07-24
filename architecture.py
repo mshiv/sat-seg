@@ -1,3 +1,8 @@
+# Defines model architecture
+# Called by train_pipeline.py
+# Model layers already defined for FCN8s. (FCN for semantic segmentation, Long et. al.)
+# Can be modified to use as FCN32, FCN16 or FCN8s.
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function

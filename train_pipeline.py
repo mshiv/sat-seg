@@ -13,12 +13,12 @@ import architecture
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
-flags.DEFINE_float('learning_rate', 0.01, 'Initial learning rate.')
-flags.DEFINE_integer('max_steps', 3, 'Number of steps to run trainer.')
+flags.DEFINE_float('learning_rate', 0.001, 'Initial learning rate.')
+flags.DEFINE_integer('max_steps', 20, 'Number of steps to run trainer.')
 flags.DEFINE_integer('batch_size', 1, 'Batch size.  '
                      'Must divide evenly into the dataset sizes.')
 flags.DEFINE_integer('display_step', 2, 'Decides steps of displayed loss/acc values')
-flags.DEFINE_string('train_dir', '/media/shiva/01D13028CF132AE0/SpaceMaster/Sem4_Prague/Thesis/tensorboard-event-files/sunday', 'Directory to put the training data.')
+flags.DEFINE_string('train_dir', '/tensorboard-event-files/', 'Directory to put the training data.')
 #flags.DEFINE_string('train_dir', '/tmp/basi/', 'Directory to put the training data.')
 flags.DEFINE_boolean('fake_data', False, 'If true, uses fake data '
                      'for unit testing.')
@@ -32,8 +32,11 @@ def run_training():
 
 	with tf.Session() as sess:
 
+		with tf.name_scope('input_images'):
+			tf.image_summary('input', images_placeholder, 1)
+
 		# Instantiate a SummaryWriter to output summaries and the Graph.
-		summary_writer = tf.train.SummaryWriter(FLAGS.train_dir, sess.graph)
+		#summary_writer = tf.train.SummaryWriter(FLAGS.train_dir, sess.graph)
 
 		with tf.name_scope("fcn32s-architecture"):
 			vgg_fcn.build(images_placeholder, num_classes=2, debug=True)
@@ -66,7 +69,9 @@ def run_training():
 		init = tf.initialize_all_variables()
 		# And then after everything is built:
 		# Create a session for running Ops on the Graph.
-		#sess = tf.Session()
+		sess = tf.Session()
+
+		summary_writer = tf.train.SummaryWriter(FLAGS.train_dir, sess.graph)
 		# Run the Op to initialize the variables.
 		sess.run(init)
 
@@ -74,7 +79,7 @@ def run_training():
 
 		for step in xrange(FLAGS.max_steps):
 			start_time = time.time()
-			print (start_time)
+			#print (start_time)
 
 			# Fill a feed dictionary with the actual set of images and labels
 			# for this particular training step.
@@ -106,11 +111,11 @@ def run_training():
 			# Save a checkpoint and evaluate the model periodically.
 			if (step + 1) % 1000 == 0 or (step + 1) == FLAGS.max_steps:
 				saver.save(sess, FLAGS.train_dir, global_step=step)
-			'''
+			
 				# Evaluate against the training set.
 				print('Training Data Eval:')
 				do_eval(sess, eval_correct, images_placeholder, labels_placeholder, data_sets.train)
-
+			'''
 				# Evaluate against the test set.
 				print('Test Data Eval:')
 				do_eval(sess, eval_correct, images_placeholder, labels_placeholder, data_sets.test)

@@ -15,16 +15,11 @@ import scipy.misc
 
 import tensorflow as tf
 import numpy as np 
-import re
 
 from tensorflow.python.framework import dtypes
 import base
 
 import matplotlib.pyplot as plt
-
-#sets path for OpenCV import
-import sys
-sys.path.append('/usr/local/lib/python2.7/site-packages')
 
 import cv2
 from imageflow import convert_images
@@ -63,8 +58,12 @@ class DataSet(object):
       
       #images = images.reshape(images.shape[0],images.shape[1] * images.shape[2] * images.shape[3])
       # Convert from [0, 255] -> [0.0, 1.0].
+      images = np.multiply(images, 1.0/255.0)
+      images -= np.mean(images)
       images = images.astype(np.float32)
-
+      
+      # normalize labels to values [0,1] for binary classification
+      labels = np.multiply(labels, 1.0/255.0)
       labels = labels.astype(np.float32)
 
     self._images = images

@@ -1,4 +1,4 @@
 # sat-seg-thesis
 Master thesis on deep learning for semantic segmentation of satellite imagery
 
-Run train_pipeline.py 
+This is a work in progress, as of July 22, 2016.
